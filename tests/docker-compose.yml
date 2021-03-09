@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  
+  fuse-appliance-template-template-test:
+    build:
+      context: .
+      dockerfile: tests/Dockerfile
+    command: ["-s", "-vv", "-x"] 
+    depends_on:
+      - fuse-appliance-template
+
+
+
+    
+    

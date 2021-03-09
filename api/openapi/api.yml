@@ -1,0 +1,450 @@
+openapi: 3.0.0
+info:
+  description: 
+    This is a fuse-appliance-template appliance for FUSE
+  version: "1.0.0"
+  title: fuse-appliance-template Appliance
+  contact:
+    email: txscience@lists.renci.org
+  license:
+    name: MIT
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+paths:
+  /config:
+    get:
+      summary: returns the config for the appliance
+      operationId: api.get_config
+      responses:
+        '200':
+          description: config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+              example:
+                {
+                    "title": "FUSE fuse-appliance-template",
+                    "piid": "fuse-appliance-template",
+                    "pluginType": "s",
+                    "settingsDefaults": {
+                      "modelParameters": [ 
+                        {
+                          "id": "current-time",
+                          "parameterDescription": "Compute variables relevant to this timestamp.",
+                          "parameterValue": 
+                            { 
+                              "value": "2019-09-20T00:00:01Z",
+                              "type": "string", 
+                              "format": "time-stamp" 
+                            }
+                          }
+                      ],
+                      "objectVariables": [
+                        {
+                          "id": "FUSE:exampleId",
+                          "title": "Demo objectVariable",
+                          "description": "This is not a real object variable and is only for demonstration purposes. Replace this with variables your appliance supports for the digital objects in your system.",
+                          "type": "string",
+                          "default": "example default value"
+                        }
+                      ]
+                    }
+                }
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+                    example: [  {
+                      "timestamp": "2019-09-20T00:00:01Z",
+                      "event": "Unknown query parameters",
+                      "source": "client",
+                      "level": 4,
+                      "action": "Ignoring query parameters"
+                      } ]
+                  config:
+                    $ref: '#/components/schemas/Config'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+                    example: [  {
+                      "timestamp": "2019-09-20T00:00:01Z",
+                      "event": "Not a compatible plugin type, [g] for [fuse-appliance-template].",
+                      "source": "admin user",
+                      "level": 1,
+                      "action": "Changed plugin from [g] type to 's'[fuse-appliance-template] and returning config as-is otherwise"
+                      } ]
+                  config:
+                    $ref: '#/components/schemas/Config'
+components:
+  schemas:
+    Message:
+      description: >-
+        This schema mirrors the 'Log' schema from tx-logging (see github.com/RENCI/tx-logging).
+      type: object
+      required:
+        - timestamp
+        - event
+        - source
+        - level
+      properties:
+        '-id':
+          not: {}
+        timestamp:
+          type: string
+          format: date-time
+          example: '2019-09-20T00:00:00Z'
+        event:
+          type: string
+          example: >-
+            The specified mapper appliance (fuse-appliance-template) is not compatible with the specified digital object server (fuse-appliance-template).
+        source:
+          type: string
+          example: admin user
+        level:
+          description: >-
+            The level value mirrors syslog values, as follows: 1 - alert,
+            'immediate action is needed' : e.g., the data will be returned, but
+            PDS picked a mapper/server at random because no default was
+            selected; 2 - critical: this could indicate resources are nearing
+            full, or similar; 3 - error: something unexpected happened, PDS
+            tried to correct for it, but the admin should be alerted; 4 -
+            warning: PDS had to correct something unexpectedly but all is well;
+            5 - notification, 'Normal but significant condition': a dashboard
+            might chose to render this message in a special console box; 6 -
+            informational: same as above, but for auditing; 7 - debugging: maybe
+            the dashboard has an optional debugging console box for handling
+            debug messages.
+          type: integer
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+          example: 1
+        action:
+          type: string
+          example: >-
+            Arbitrarily chose this digital object server from those available:
+            (fuse-appliance-template). Only one digital object server is available that is also
+            compatible with fuse-mapper-<my mapper>
+    Config:
+      type: object
+      required:
+        - piid
+        - pluginType
+      properties:
+        piid:
+          type: string
+          description: >-
+            A string, unique to this deployment, used to identify this plugin in
+            realtime
+          example: fuse-appliance-template
+        title:
+          type: string
+          description: Meaningful name for this plugin
+          example: Digital object server for <my data source>
+        enabled:
+          type: boolean
+          description: >-
+            Admin can 'disable' this plugin, and if so, prevent it from being
+            chosen on any client or dashboard.
+          example: true 
+        pluginDependencies:
+          type: array
+          items:
+            type: string
+            description: >-
+              An array of container names upon which the plugin in question
+              depends. For example, 'txscience/fuse-appliance-template:0.2.0'. Mapper
+              plugins must indicate a dependency on one or more digital object server plugins,
+              but dependencies are discouraged otherwise in order to maintain
+              the decoupling and reuse of plugins. Every plugin of type 'm' and
+              'mD' must have at least one 's' or 'sD' plugin listed in
+              pluginDependencies, otherwise return 500.
+        pluginType:
+          type: string
+          enum:
+            - a
+            - m
+            - s
+            - sD
+            - mD
+          description: >-
+            A value identifying the plugin type. 
+            'a'=Analysis, 'c'=Convenience, 'm'=Mapper, 's'=Server, 'mD'= Default Mapper, 'sD'=Default digital object server.
+          example: s
+        pluginTypeTitle:
+          type: string
+          enum:
+            - Analysis
+            - Mapper
+            - Server
+            - Default Server
+            - Default Mapper
+          description: >-
+            A human-readable value for the type. 'a'=Analysis, 'c'=Convenience, 
+            'm'=Mapper, 's'=Server, 'mD'=Default Mapper, 'sD'=Default Server
+        settingsDefaults:
+          $ref: '#/components/schemas/Settings'
+    Settings:
+      type: object
+      description: >-
+        Used for specifying factory defaults, admin over-ride defaults,
+        user-over-ride input values, and ultimately the values that the plugin
+        will use, or reports as having used.
+      properties:
+        pluginSelectors:
+          description: >-
+            Maps the piid to a set of selector values. Potentially, a decision tree could be
+            implemented here by prefacing each selector array item with logic,
+            but for this API version we will instead always AND all the selector
+            array elements. For example, 'if analysis is requried for organism _x_
+            AND model _y_ then use plugin _z_'.
+          type: array
+          items:
+            $ref: '#/components/schemas/PluginSelector'
+          example:
+            - id: taxid.NCBI
+              title: Taxonomy Id
+              type: string
+              enum:
+                - value: '9606'
+                  title: Human
+                - value: '10090'
+                  title: Mouse
+                - value: '10116'
+                  title: Rat
+                - value: '10029'
+                  title: Chinese hamster
+              selectorValue:
+                value: '9606'
+                title: Human
+        modelParameters:
+          description: >-
+            Default, typed values for any parameters that might be required by
+            the plugin
+          type: array
+          items:
+            $ref: '#/components/schemas/PluginParameter'
+          example:
+            - id: 'cellfie:1'
+              title: Thresholding Approach
+              parameterDescription: >-
+                Select one of two thresholding methods, either global (the threshold is the same for all the genes) or local (the threshold is gene specific). See https://github.com/LewisLabUCSD/CellFie/wiki/Threshold-definition for more details.
+              type: string
+              enum:
+                - global
+                - local
+              value: "global"
+        objectVariables:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectVariable'
+          example:
+            - id: 'FUSE:age'
+              certitude: 2
+              how: From Immunespace
+              title: age
+              variableValue:
+                value: '.5'
+                units: years
+              why: >-
+                Age is used for comparing objects
+              type: number
+              minimum: '0'
+        timestamp:
+          description: 'If absent, defaults to current time. Can be overridden by objectVariables timestamp value on a variable-by-variable basis.'
+          type: string
+          format: date-time
+          example: '2019-12-03T13:41:09.942+00:00'
+    PluginSelector:
+      type: object
+      description: >-
+        Used for selecting plugins. For example, a selector that provides the
+        value of an organism informs what type of mapping plugin is required,
+        or the name of a model informs what type of analysis plugin to use.
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: >-
+            The client must have prior knowledge of the full list of selectors
+            available for a given version of a mapper. So this unique selector id is used to
+            determine which selector type is described. Stylistically, the id will
+            end in the community standard coding system used for this type, e.g.,
+            taxid.NCBI, but not always, e.g., FUSE:iHSA is a selector 
+            for choosing analysis using the iHSA model on human organisms.
+          example: taxid.NCBI
+        selectorValue:
+          type: object
+          description: >-
+            The title in the example is optional. NOTE: This value is actually an object type, but we use
+            'string' here to overcome a shortcoming of the swagger ui. This
+            design choice was made in order to prioritize a better interactive
+            documentation experience for the API user. 
+          example:
+            value: '9606'
+            title: Human
+            type: string
+            enum:
+              - value: '9606'
+                title: Human
+              - value: '10090'
+        title:
+          type: string
+          example: NCBI organismal taxonomy id
+          description: Human-readable name for this selector type.
+    PluginParameter:
+      type: object
+      description: Used for specifying factory defaults, admin over-ride defaults,
+        user-over-ride input values, and ultimately the values that the plugin
+        will use, or reports as having used, to parameterize models.
+      required:
+        - id
+        - parameterValue
+      properties:
+        id:
+          type: string
+          description: >-
+            The id for one of the parameters used by the plugin in question.
+            Parameters are completely defined by the plugin and need not be
+            interchangable with other plugins. The client will have no prior
+            knowledge for plugin parameters.
+          example: 'FUSE:geneList'
+        title:
+          type: string
+          description: >-
+            A non-standardized, human-readable string to describe the id. May be
+            implemented by FUSE to aid in debugging, clients should not
+            depend on this value.
+          example: >-
+            Gene list specifying which genes to return
+        parameterDescription:
+          type: string
+          description: >-
+            A precise description of the parameter, provided by the plugin requiring
+            the parameter. This description can be served by the client to guide the
+            user in overriding default parameter values. Plugins should consider using
+            a message catalog to hold parameterDescription strings in order to 
+            facilitate internationalization.
+          example: >-
+            Please choose 'all' to return all genes, 'intersection' to return the intersection of all genes in the group of aliquots, or 'specific' to use a specific list of genes.
+        parameterValue:
+          type: object
+          description: >-
+            The actual value of the parameter. NOTE: This value is actually an object type, but
+            we use 'string' here to overcome a shortcoming of the swagger ui.
+            This design choice was made in order to prioritize a better
+            interactive documentation experience for the API user.
+          example:
+            value: "2019-09-20T00:00:01Z"
+            type: string
+            format: time-stamp
+    ObjectVariable:
+      description: >-
+        Used to specify object values sourced from the digital object server, as well as user-supplied overrides of
+        those values, and/or user-supplied replacements for values missing in the original data source.
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: >-
+            The id for one of the object variables supported by this FUSE
+            version. The api client (e.g., dashboard) has the option of ignoring any variable if the client
+            doesn't recognize the id, but if another plugin requires this variable, 
+            then the end user won't have the option of overriding that ignored variable.
+            Stylistically, community standard coding system used for this type will 
+            preface the code used, e.g., taxid:9606, HGNC:1000, LOINC:30525-0, etc.
+          example: 'LOINC:30525-0'
+        certitude:
+          type: integer
+          description: >-
+            The certitude of the value, 0 not certain, 1 somewhat certain, 2
+            certain. User-supplied values will always be '2' to avoid personal 
+            bias in reporting certitude, with the assumption that human error 
+            will be intercepted, and human intelligence overrides algorithm outputs.
+          example: 2
+        variableDescription:
+          type: string
+          description: >-
+            Description of the object variable can optionally be set by the plugin. Object
+            variable descriptions should describe the variable precisely; for
+            example, rather than say simply 'BMI',the variable might be
+            described as 'nearest BMI prior to measurement', or
+            'comma-delimited list of {BMI,date} objects for the object with a
+            given study period, as defined by the 'study-start', 'study-end'
+            model parameters'. The comprehensive list of supported object variables is tied to
+            the FUSE release. 
+          example: "The age is determined by subtracting the birthdate from the relative time. Also known as 'chronological age' or 'Post Natal Age' (PNA). Specified as some fraction of years, convention."
+        how:
+          type: string
+          description: >-
+            A value of 'The value was specified by the end user.' indicates
+            that the data source value (whether or not it was missing in the data source)
+            has been overriden by the end user.
+          example: The value was specified by the end user.
+        title:
+          type: string
+          description: >-
+            A non-standardized, human-readable string to describe the object variable. May be
+            implemented by FUSE to aid in debugging, clients should not
+            depend on this value.
+          example: Age
+        variableValue:
+          description: >-
+            The variableValue may include the 'units' field, which is optional,
+            and if left off, implies the system default units. It's up to the
+            analysis plugin to make unit conversions as needed by the analysis
+            model, just as it is up to the dashboard to make unit conversions as
+            needed by the end user.
+          type: object
+          example:
+            value: 0.5
+            units: years
+            type: number
+            default: 18
+        why:
+          type: string
+          description: >-
+            Provides the client with a human-readable, non-standard
+            justification for why the plugin needs this particular variable.
+            This can be rendered by the client to provide the end-user with
+            rationale for the object values, but does not address how the value
+            was computed.
+          example: >-
+            Age is used to compare objects.
+        group:
+            type: string
+            description: >-
+              A 'tag' for grouping semantically similar variables. Used to inform
+              the client on how to render many object variables. Otherwise superfluous and can be safely ignored by client if not helpful for rendering.
+            example: "Sample"
+        timestamp:
+          type: string
+          description: >-
+            The time used to compute the object variable, for example, can be set to a time in the past to make predictions and compare to recent data.
+          format: date-time
+          example: "2020-07-01T14:29:15.453Z"
+    Bundle:
+      type: object

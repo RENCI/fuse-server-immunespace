@@ -1,0 +1,20 @@
+{
+    "pluginDependencies": ["fuse-appliance-template"],
+    "title": "Generic appliance",
+    "pluginType": "s",
+    "pluginTypeTitle": "Server",
+    "pluginSelectors": [],
+    "settingsDefaults": {
+        "pluginSelectors": [],
+        "pluginParameters": [],
+        "objectVariables": [
+            {
+                "id": "FUSE:exampleId",
+                "title": "Demo objectVariable",
+                "description": "This is not a real object variable and is only for demonstration purposes. Replace this with variables your appliance supports for the digital objects in your system.",
+                "type": "string",
+                "default": "example default value"
+            }
+        ]
+    }
+}

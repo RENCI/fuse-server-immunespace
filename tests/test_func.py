@@ -7,7 +7,7 @@ import json
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
-appliance="http://fuse-appliance-template:8080"
+appliance="http://fuse-server-immunespace:8080"
 # xxx log.info(f"starting on port (${API_PORT})")
 
 json_headers = {
@@ -28,3 +28,14 @@ json_headers = {
 }
 
 # other endpoint tests, start with "test_"
+
+
+# xxx kludged for now
+obj = {
+    "id": "1",
+    "resourceType":"eset",
+    "value": {"6005":1.5, "622":0.74, "6120":0.33, "22934":1.2}
+}
+def test_object():
+    resp = requests.get(f"{appliance}/Object/{1}")
+    assert resp.json() == obj

@@ -1,9 +1,9 @@
 openapi: 3.0.0
 info:
   description: 
-    This is a fuse-appliance-template appliance for FUSE
+    This is a FUSE digital object server appliance for ImmuneSpace
   version: "1.0.0"
-  title: fuse-appliance-template Appliance
+  title: ImmuneSpace Server Appliance
   contact:
     email: txscience@lists.renci.org
   license:
@@ -23,21 +23,17 @@ paths:
                 $ref: '#/components/schemas/Config'
               example:
                 {
-                    "title": "FUSE fuse-appliance-template",
-                    "piid": "fuse-appliance-template",
+                    "title": "FUSE server appliance for Immunespace",
+                    "piid": "fuse-server-immunespace",
                     "pluginType": "s",
                     "settingsDefaults": {
                       "modelParameters": [ 
                         {
                           "id": "current-time",
                           "parameterDescription": "Compute variables relevant to this timestamp.",
-                          "parameterValue": 
-                            { 
-                              "value": "2019-09-20T00:00:01Z",
-                              "type": "string", 
-                              "format": "time-stamp" 
-                            }
-                          }
+                          "parameterValue": { "value": "2019-09-20T00:00:01Z" },
+                          "legalValues": { "type": "string", "format": "time-stamp" }
+                        }
                       ],
                       "objectVariables": [
                         {
@@ -83,13 +79,77 @@ paths:
                       $ref: '#/components/schemas/Message'
                     example: [  {
                       "timestamp": "2019-09-20T00:00:01Z",
-                      "event": "Not a compatible plugin type, [g] for [fuse-appliance-template].",
+                      "event": "Not a compatible plugin type, [g] for [fuse-server-immunespace].",
                       "source": "admin user",
                       "level": 1,
-                      "action": "Changed plugin from [g] type to 's'[fuse-appliance-template] and returning config as-is otherwise"
+                      "action": "Changed plugin from [g] type to 's'[fuse-server-immunespace] and returning config as-is otherwise"
                       } ]
                   config:
                     $ref: '#/components/schemas/Config'
+  /Object/{objectId}:
+    get:
+      summary: returns the requested object
+      operationId: api.get_object
+      parameters:
+        - name: objectId
+          example: 38
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Object'
+              example:
+                {
+                "id": "1",
+                "resourceType":"eset",
+                "value": {"6005":1.5, "622":0.74, "6120":0.33, "22934":1.2}
+                }
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+                    example: [  {
+                      "timestamp": "2019-09-20T00:00:01Z",
+                      "event": "Unknown query parameters",
+                      "source": "client",
+                      "level": 4,
+                      "action": "Ignoring query parameters"
+                      } ]
+                  object:
+                    $ref: '#/components/schemas/Object'
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+                    example: [  {
+                      "timestamp": "2019-09-20T00:00:01Z",
+                      "event": "Not a compatible plugin type, [g] for [fuse-server-immunespace].",
+                      "source": "admin user",
+                      "level": 1,
+                      "action": "Changed plugin from [g] type to 's'[fuse-server-immunespace] and returning config as-is otherwise"
+                      } ]
+                  object:
+                    $ref: '#/components/schemas/Object'
 components:
   schemas:
     Message:
@@ -111,7 +171,7 @@ components:
         event:
           type: string
           example: >-
-            The specified mapper appliance (fuse-appliance-template) is not compatible with the specified digital object server (fuse-appliance-template).
+            The specified mapper appliance (fuse-mapper-gdc) is not compatible with the specified digital object server (fuse-server-immunespace).
         source:
           type: string
           example: admin user
@@ -143,7 +203,7 @@ components:
           type: string
           example: >-
             Arbitrarily chose this digital object server from those available:
-            (fuse-appliance-template). Only one digital object server is available that is also
+            (fuse-server-immunespace). Only one digital object server is available that is also
             compatible with fuse-mapper-<my mapper>
     Config:
       type: object
@@ -156,7 +216,7 @@ components:
           description: >-
             A string, unique to this deployment, used to identify this plugin in
             realtime
-          example: fuse-appliance-template
+          example: fuse-server-immunespace
         title:
           type: string
           description: Meaningful name for this plugin
@@ -173,7 +233,7 @@ components:
             type: string
             description: >-
               An array of container names upon which the plugin in question
-              depends. For example, 'txscience/fuse-appliance-template:0.2.0'. Mapper
+              depends. For example, 'txscience/fuse-server-immunespace:0.2.0'. Mapper
               plugins must indicate a dependency on one or more digital object server plugins,
               but dependencies are discouraged otherwise in order to maintain
               the decoupling and reuse of plugins. Every plugin of type 'm' and
@@ -446,5 +506,17 @@ components:
             The time used to compute the object variable, for example, can be set to a time in the past to make predictions and compare to recent data.
           format: date-time
           example: "2020-07-01T14:29:15.453Z"
-    Bundle:
+    Object:
       type: object
+      properties:
+        id:
+          type: string
+          example: 38
+        resourceType:
+          type: string
+          example: "eset"
+      required: ["id", "resourceType"]
+      example:
+        id: "1"
+        resourceType: "Cohort"
+

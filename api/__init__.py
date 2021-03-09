@@ -13,4 +13,14 @@ def get_config():
     with open(config_path) as f:
         return json.load(f)
 
+# xxx kludged for now
+def get_object(objectId):
+    obj = {
+        "id": "1",
+        "resourceType":"eset",
+        "value": {"6005":1.5, "622":0.74, "6120":0.33, "22934":1.2}
+    }
+    
+    return obj
+
 

@@ -512,11 +512,37 @@ components:
         id:
           type: string
           example: 38
-        resourceType:
+        pData:
           type: string
-          example: "eset"
-      required: ["id", "resourceType"]
+          description: >-
+            Comma-delimited lines, samples on rows, covariates on columns; First row is covariate names
+        exprs:
+          type: string
+          description: >-
+            Comma-delimited lines, features (genes) on the rows, samples/aliquots on the columns.
+        featureNames:
+          type: string
+          description: >-
+            Names of the features (genes) in exprs. 
+        system:
+          type: string
+          enum:
+            - HUGO
+            - HGNC
+            - NCBI
+            - Ensembl
+          description: >-
+            Immunescape standardizes across studies using HUGO gene symbols; should always be "HUGO"
+        experimentData:
+          type: string
+          description: >-
+            May contain information such as the following: "Experimenter name", "Laboratory", "Contact information", "Title", "URL", "PMIDs", "notes"; and the "notes" may contain fields such as the following: "normalization", "summarizeBy", "org.Hs.eg.db_version", "featureAnnotationSet".
+        phenoMetadata:
+          type: string
+          description: >-
+            May contain descriptions for the covariate names in the pdata
+      required: ["id", "exprs", "featureNames"]
       example:
         id: "1"
-        resourceType: "Cohort"
+        exprs: "1.0,2.5\n3.1,3.2"
 

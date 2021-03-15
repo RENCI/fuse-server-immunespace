@@ -1,3 +1,6 @@
 [submodule "tx-utils"]
 	path = tx-utils
 	url = http://github.com/RENCI/tx-utils.git
+[submodule "tx-immunespace-groups"]
+	path = tx-immunespace-groups
+	url = http://github.com/RENCI/tx-immunespace-groups.git

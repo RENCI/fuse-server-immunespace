@@ -1,6 +1,7 @@
 import os
 import logging
 from pathlib import Path
+from fuse.server.immunespace.dispatcher import GetObject
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -14,13 +15,15 @@ def get_config():
         return json.load(f)
 
 # xxx kludged for now
+# how does session get passed in?
 def get_object(objectId):
-    obj = {
-        "id": "1",
-        "resourceType":"eset",
-        "value": {"6005":1.5, "622":0.74, "6120":0.33, "22934":1.2}
+    # sess = os.environ(['APIKEY']
+    # sess = "session|056401be3718ed9e1a34391bd78ad335" # xxx kludged
+    sess = "TEST" # xxx kludged
+    return {
+        "id": objectId,
+        "resourceType": "eset",
+        "resource": GetObject(objectId,sess)
     }
-    
-    return obj
 
 

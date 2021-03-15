@@ -3,6 +3,7 @@ from pathlib import Path
 import logging
 import os
 import json
+import pytest
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -16,6 +17,9 @@ json_headers = {
 }
 
 def test_config():
+    if os.environ['TEST_LIBRARY']:
+        pytest.skip("Not testing docker container")
+
     config_path = Path(__file__).parent / "config.json"
     with open(config_path) as f:
         config=json.load(f)
@@ -37,5 +41,8 @@ obj = {
     "value": {"6005":1.5, "622":0.74, "6120":0.33, "22934":1.2}
 }
 def test_object():
+    if os.environ['TEST_LIBRARY']:
+        pytest.skip("Not testing docker container")
+
     resp = requests.get(f"{appliance}/Object/{1}")
     assert resp.json() == obj

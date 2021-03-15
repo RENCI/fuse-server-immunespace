@@ -6,6 +6,8 @@ services:
       context: .
       dockerfile: tests/Dockerfile
     command: ["-s", "-vv", "-x"] 
+    environment:
+      TEST_LIBRARY: $TEST_LIBRARY
     depends_on:
       - fuse-server-immunespace
 

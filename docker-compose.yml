@@ -6,3 +6,16 @@ services:
       context: .
     ports:
       - $API_PORT:8080
+    depends_on:
+      - tx-immunespace-groups
+
+  tx-immunespace-groups:
+    container_name: tx-immunespace-groups
+    build: ./tx-immunespace-groups
+    restart: always
+    environment:
+      GROUP: cellfie_group2
+      APIKEY: session|056401be3718ed9e1a34391bd78ad335
+#      APIKEY: $APIKEY
+
+

@@ -8,6 +8,8 @@ services:
       - $API_PORT:8080
     depends_on:
       - tx-immunespace-groups
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
   tx-immunespace-groups:
     container_name: tx-immunespace-groups

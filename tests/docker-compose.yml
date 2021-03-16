@@ -10,8 +10,3 @@ services:
       TEST_LIBRARY: $TEST_LIBRARY
     depends_on:
       - fuse-server-immunespace
-
-
-
-    
-    

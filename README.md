@@ -51,6 +51,7 @@ Don't change these:
 ## validate installation
 ```
 curl -X GET http://localhost:8082/config
+curl -X GET http://localhost:8082/Object/"TEST" > test-obj.json
 ```
 
 ## stop

@@ -16,6 +16,16 @@ FUSE appliances can be run as a stand-alone appliance (see `up.sh` below) or as 
 * Docker 20.10 or higher
 * docker-compose v1.28 and 3.8 in the yml
 * cargo 1.49.0 or higher (for installing dockerfile-plus)
+For testing:
+* git-lfs 2.10.0-1.el7 or higher
+
+Tips for adding git "[Large File Storage](https://git-lfs.github.com/)":
+```
+sudo yum install git-lfs # once per computer
+git lfs install # once per user
+git lfs track tests/expected/<large-test-file>.json # once per large test file added
+git add .gitattributes # once when adding file
+```
 
 Tips for updating docker-compose on Centos:
 

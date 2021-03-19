@@ -61,7 +61,10 @@ Don't change these:
 ## validate installation
 ```
 curl -X GET http://localhost:8082/config
-curl -X GET http://localhost:8082/Object/"TEST" > test-obj.json
+curl -X GET http://localhost:8082/Object/TEST > test-obj.json
+# count number of unique subjects in dataset, plus one line for header
+cat test-obj.json  |jq -C .resource.pData[][0]|sort|uniq -c|wc -l
+# should be 55
 ```
 
 ## stop
@@ -82,3 +85,7 @@ To test library together with docker containers:
 For repo owners:
 
 Upon any commit to the `main` or tagged branches, this repo will be pulled by dockerhub and `tests/test.sh` will be run. In order for the tests to pass, any variables required to be set in `.env` must also be set in Dockerhub's 'configure automated builds' section of the [txscience/fuse-server-immunespace dockerhub repo](https://hub.docker.com/repository/docker/txscience/fuse-server-immunespace/builds). The tag on this README will indicate testing status of the last commit.
+
+## To Do
+* Pass in USERNAME, APIKEY
+* Refine object model design

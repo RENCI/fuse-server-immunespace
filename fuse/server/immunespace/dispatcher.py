@@ -6,8 +6,8 @@ import docker
 
 # library API
 # from fuse.server.immunespace.dispatcher import GetObject
-def GetObject(objectId,sess):
-    resc = _get_object(objectId, sess)
+def GetObject(objectId, sess, username):
+    resc = _get_object(objectId, sess, username)
 
     if resc is not None:
         return resc
@@ -29,10 +29,12 @@ def make_matrix(mxbytes):
     del mxbytes[-1]
     return mxbytes
 
-def _get_object(objectId, sess):
+def _get_object(objectId, sess, username):
     g_test= ""
-    if(sess == "TEST"):
+    if(sess == "TEST" or objectId == "TEST"):
         g_test = "--test"
+    if(username == None):
+        g_username = "-u "+username
 
     # xxx implement a cache like this:
     # resc = cache.get_object(objectId)

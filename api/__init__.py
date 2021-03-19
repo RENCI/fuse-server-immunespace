@@ -22,10 +22,16 @@ def get_object(objectId):
         sess="TEST"
         # xxx AND return 505
 
+    username = os.getenv('USERNAME')
+    if username == None:
+        sess="TEST"
+        # xxx AND return 505
+
+    # xxx should include username
     return {
         "id": objectId,
         "resourceType": "eset",
-        "resource": GetObject(objectId,sess)
+        "resource": GetObject(objectId, sess, username)
     }
 
 

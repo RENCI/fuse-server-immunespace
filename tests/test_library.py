@@ -15,13 +15,13 @@ def test_GetObject():
         pytest.skip("Only testing docker container")
 
     objectId = os.getenv('GROUP')
+    username = os.getenv('USERNAME')
     sess = os.getenv('APIKEY')
-    sess = "TEST" # xxx
 
     obj = {
         "id": objectId,
         "resourceType": "eset",
-        "resource": GetObject(objectId,sess)
+        "resource": GetObject(objectId,sess,username)
     }
 
     #xxxprint(json.dumps(obj, indent=4, sort_keys=True))

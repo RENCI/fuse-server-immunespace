@@ -40,7 +40,7 @@ def _get_object(objectId, sess):
     #    return resc
 
     client = docker.from_env()
-    ret = client.containers.run("tx-immunespace-groups", "./ImmGeneBySampleMatrix.R "+ g_test + " -g " + objectId + " -a " + sess)
+    ret = client.containers.run("txscience/tx-immunespace-groups:0.2", "./ImmGeneBySampleMatrix.R "+ g_test + " -g " + objectId + " -a " + sess)
 
     scrap, experimentData, phenoMetadata, pdata, featureNames, exprs=ret.split(b"===")
 

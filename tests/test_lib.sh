@@ -1,8 +1,6 @@
 #!/bin/bash
 
-set -a
-source .env
-set +a
+export $(cat tests/test.env|grep -v '^#')
 
 export TEST_LIBRARY=1
 

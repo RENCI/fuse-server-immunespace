@@ -17,9 +17,11 @@ def get_config():
 # xxx kludged for now
 # how does session get passed in?
 def get_object(objectId):
-    # sess = os.environ(['APIKEY']
-    # sess = "session|056401be3718ed9e1a34391bd78ad335" # xxx kludged
-    sess = "TEST" # xxx kludged
+    sess = os.getenv('APIKEY')
+    if sess == None:
+        sess="TEST"
+        # xxx AND return 505
+
     return {
         "id": objectId,
         "resourceType": "eset",

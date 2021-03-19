@@ -1,15 +1,19 @@
 from fuse.server.immunespace.dispatcher import GetObject
 import json
+import os
+import pytest
 
 # this takes about 20s to return
 # go get a session id and group objectIdfrom immunespace for  user for this to work:
 # https://www.immunespace.org/security/externalToolsView.view?returnUrl=%2Fproject%2FStudies%2Fbegin.view%3F
 def test_GetObject():
 
-    objectId="cellfie_group2"
-    sess="TEST"
-    #sess = os.environ(['APIKEY'])
-    #sess = os.environ("TEST")
+    if os.getenv('TEST_LIBRARY') != 1:
+        pytest.skip("Only testing docker container")
+    
+    objectId = "cellfie_group2"
+    sess = "TEST"
+    #sess = os.getenv('APIKEY')
 
     obj = GetObject(objectId, sess)
     print(json.dumps(obj, indent=4, sort_keys=True))

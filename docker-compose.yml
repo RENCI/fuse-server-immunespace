@@ -12,12 +12,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   tx-immunespace-groups:
-    container_name: tx-immunespace-groups
-    build: ./tx-immunespace-groups
-    restart: always
+    image: txscience/tx-immunespace-groups:0.2
     environment:
-      GROUP: cellfie_group2
-      APIKEY: session|056401be3718ed9e1a34391bd78ad335
-#      APIKEY: $APIKEY
+      APIKEY: $APIKEY
 
 

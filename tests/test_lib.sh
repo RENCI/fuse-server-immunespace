@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 export $(cat tests/test.env|grep -v '^#')
 

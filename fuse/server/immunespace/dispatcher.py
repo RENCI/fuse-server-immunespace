@@ -51,7 +51,6 @@ def _get_object(objectId, sess):
     phenoMetadata=make_matrix(phenoMetadata)
     
     obj = { 
-        "id": objectId,
         "pData":  pdata,
         "exprs":  exprs,
         "featureNames": featureNames,

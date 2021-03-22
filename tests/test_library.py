@@ -24,12 +24,6 @@ def test_GetObject():
         "resource": GetObject(objectId,sess,username)
     }
 
-    #xxxprint(json.dumps(obj, indent=4, sort_keys=True))
-
-    # Uncomment this to capture output:
-    #with open('tests/test_1.out.json', 'w', encoding='utf-8') as f:
-    #     json.dump(obj, f, ensure_ascii=False, indent=4, sort_keys=True)
-
     with open('tests/expected/test_1.json', 'r', encoding='utf-8') as f:
         expected = json.load(f)
 
@@ -46,6 +40,10 @@ def test_GetObject():
         expected["resource"]["featureNames"] = np.array(expected["resource"]["featureNames"])[0:max_genes].tolist()
         expected["resource"]["pData"] = np.array(expected["resource"]["pData"])[0:max_pheno,0:max_subjs].tolist() # 4 phenoetypes, 2 subjects
         
+    # Uncomment this to capture output:
+    #with open('tests/test_1.out.json', 'w', encoding='utf-8') as f:
+    #     json.dump(obj, f, ensure_ascii=False, indent=4, sort_keys=True)
+
     objs = json.dumps(obj, ensure_ascii=False, indent=4, sort_keys=True)
     expecteds = json.dumps(expected, ensure_ascii=False, indent=4, sort_keys=True)
 

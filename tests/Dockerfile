@@ -7,7 +7,7 @@ INCLUDE+ Dockerfile.common
 COPY tests/test_*.py /usr/src/app/
 COPY config.json /usr/src/app/
 RUN mkdir -p /usr/src/app/tests/expected
-COPY tests/expected/test_1.json /usr/src/app/tests/expected
+COPY tests/expected/test_2.json /usr/src/app/tests/expected
 RUN pip3 install --no-cache-dir pytest requests
 
 ENTRYPOINT ["pytest"]
